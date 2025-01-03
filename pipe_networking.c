@@ -42,7 +42,9 @@ int server_handshake(int *to_client) {
 
   int ack;
   read(from_client, &ack, 4);
-  
+  if (ack != synack + 1) {
+    exit(1);
+  }
 
   return from_client;
 }
