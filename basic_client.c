@@ -6,4 +6,10 @@ int main() {
   int from_server;
 
   from_server = client_handshake( &to_server );
+
+  int x;
+  while (read(from_server, &x, 4)) {
+    printf("%d\n", x);
+  }
+
 }
