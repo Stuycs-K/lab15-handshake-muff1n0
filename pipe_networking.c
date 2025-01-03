@@ -13,7 +13,7 @@ int server_setup() {
 
   mkfifo(WKP, 0644);
   int from_client = open(WKP, O_RDONLY);
-  remove(rfile);
+  remove(WKP);
 
   return from_client;
 }
@@ -29,8 +29,19 @@ int server_setup() {
   =========================*/
 int server_handshake(int *to_client) {
   int from_client = server_setup();
-  int SYN;
-  read(from_client, *SYN, 4);
+
+
+  char syn[30];
+  read(from_client, syn, 30);
+
+  *to_client = open(syn, O_WRONLY);
+
+  srand(time(NULL));
+  int synack = rand();
+  write(*to_client, &synack, 4);
+
+  int ack;
+  read(from_client, &ack, 4);
   
 
   return from_client;
@@ -52,11 +63,17 @@ int client_handshake(int *to_server) {
   mkfifo(pp, 0644);
 
   *to_server = open(WKP, O_WRONLY);
-  write(*to_server, getpid(), 30);
+  write(*to_server, pp, 30);
 
 
 
   int from_server = open(pp, O_RDONLY);
+  remove(pp);
+
+  int ack;
+  read(from_server, &ack, 4);
+  ack++;
+  write(*to_server, &ack, 4);
 
 
 
