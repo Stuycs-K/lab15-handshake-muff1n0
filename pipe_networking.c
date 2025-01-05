@@ -10,10 +10,8 @@
   returns the file descriptor for the upstream pipe.
   =========================*/
 int server_setup() {
-
   mkfifo(WKP, 0644);
   int from_client = open(WKP, O_RDONLY);
-  remove(WKP);
 
   return from_client;
 }
@@ -33,7 +31,7 @@ int server_handshake(int *to_client) {
 
   char syn[30];
   read(from_client, syn, 30);
-
+  remove(WKP);
   *to_client = open(syn, O_WRONLY);
 
   srand(time(NULL));

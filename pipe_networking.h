@@ -7,6 +7,7 @@
 #include <string.h>
 #include <errno.h>
 #include <time.h>
+#include <signal.h>
 
 #ifndef NETWORKING_H
 #define NETWORKING_H
@@ -36,4 +37,5 @@ int server_setup();
 int multi_server_setup();
 int multi_server_connect(int from_client, struct message m);
 
+static void sighandler(int signo);
 #endif
