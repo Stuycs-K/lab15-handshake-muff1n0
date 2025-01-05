@@ -12,7 +12,7 @@
 int server_setup() {
   mkfifo(WKP, 0644);
   int from_client = open(WKP, O_RDONLY);
-
+  remove(WKP);
   return from_client;
 }
 
@@ -43,8 +43,6 @@ int server_handshake(int *to_client) {
   if (ack != synack + 1) {
     exit(1);
   }
-
-  remove(WKP);
   return from_client;
 }
 
@@ -93,4 +91,23 @@ int client_handshake(int *to_server) {
 int server_connect(int from_client) {
   int to_client  = 0;
   return to_client;
+}
+
+
+int server_handshake_half(int *to_client, int from_client) {
+  char syn[30];
+  read(from_client, syn, 30);
+  
+  *to_client = open(syn, O_WRONLY);
+
+  srand(time(NULL));
+  int synack = rand();
+  write(*to_client, &synack, 4);
+
+  int ack;
+  read(from_client, &ack, 4);
+  if (ack != synack + 1) {
+    exit(1);
+  }
+  return from_client;
 }
