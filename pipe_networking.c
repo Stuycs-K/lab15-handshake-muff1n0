@@ -31,7 +31,7 @@ int server_handshake(int *to_client) {
 
   char syn[30];
   read(from_client, syn, 30);
-  remove(WKP);
+  
   *to_client = open(syn, O_WRONLY);
 
   srand(time(NULL));
@@ -44,6 +44,7 @@ int server_handshake(int *to_client) {
     exit(1);
   }
 
+  remove(WKP);
   return from_client;
 }
 
